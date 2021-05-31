@@ -1,0 +1,337 @@
+var xoro = ["https://studio.code.org/v3/assets/f3hl0xtHY0zFmqSwe062N2UkwSkzADsbLt01MnZxefA/X.png?t=1617120980000",
+            "https://studio.code.org/v3/assets/f3hl0xtHY0zFmqSwe062N2UkwSkzADsbLt01MnZxefA/O.png?t=1617122548000",
+            "https://studio.code.org/v3/assets/f3hl0xtHY0zFmqSwe062N2UkwSkzADsbLt01MnZxefA/Blank.png?t=1617202644682"];
+var scoreList = [0, 0];
+
+var firstmove = false;
+var secondmove = false;
+var thirdmove = false;
+var lastmove = false;
+var PlayerChoice = 1;
+var ComputerWin = 0;
+var route = "";
+var Lemove = 0;
+var index = 0;
+var inDex = 0;
+var xcord;
+var ycord;
+
+//Sets the points as 0 to 0
+PointsAllocation();
+
+//Program that determines computer choice (Tic/Tac)
+onEvent("Startbutton", "click", function() {
+  hideElement("GameOver");
+  showElement("TictacToeboard");
+  inDex = randomNumber(0, 1);
+  index = inDex;
+  setProperty("XorO5", "image", xoro[index]);
+  showElement("Untouchable1");
+  //console.log(inDex);
+});
+
+//How the Player can interact with the the TicTacToe board
+onEvent("TictacToeboard", "click", function Play(event) {
+  xcord = event.clientX;
+  ycord = event.clientY;
+  //console.log(xcord);
+  //console.log(ycord);
+  index = TicTacSelect();
+  if (Lemove==0) {
+    firstmove = true;
+    Lemove = Lemove+1;
+    PlayerPick();
+  } else if ((Lemove==1)) {
+    secondmove = true;
+    Lemove = Lemove+1;
+    PlayerPick();
+  } else if ((Lemove==2)) {
+    thirdmove = true;
+    Lemove = Lemove+1;
+    PlayerPick();
+  } else if ((Lemove==3)) {
+    lastmove = true;
+    Lemove = Lemove+1;
+    PlayerPick();
+  }
+  //console.log(index);
+});
+
+//Function that helps to set the player as the opposite of the computer
+function TicTacSelect(playertic) {
+  if (inDex == 0) {
+    //if computer is X, player is O
+    playertic = 1;
+    return playertic;
+  } else if ((inDex == 1)) {
+    //if computer is O, player is X
+    playertic = 0;
+    return playertic;
+  }
+}
+
+//Determines how the player plays which decides the functions of the computer
+function PlayerPick() {
+  if (xcord <= 100 && ycord <= 100) {
+  //Block 1
+  setProperty("XorO1", "image", xoro[index]);
+  PlayerChoice = 1;
+  ComputerPlay();
+  } else if ((xcord >= 110 && xcord <= 210)&& ycord <= 100) {
+  //Block 2
+  setProperty("XorO2", "image", xoro[index]);
+  PlayerChoice = 2;
+  ComputerPlay();
+  } else if (xcord >= 220 && ycord <= 100) {
+  //Block 3
+  setProperty("XorO3", "image", xoro[index]);
+  PlayerChoice = 3;
+  ComputerPlay();
+  } else if (xcord <= 100 && (ycord >= 110 && ycord <= 210)) {
+  //Block 4
+  setProperty("XorO4", "image", xoro[index]);
+  PlayerChoice = 4;
+  ComputerPlay();
+  } else if (xcord >= 220 && (ycord >= 110 && ycord <= 210)) {
+  //Block 6
+  setProperty("XorO6", "image", xoro[index]);
+  PlayerChoice = 6;
+  ComputerPlay();
+  } else if (xcord <= 100 && (ycord >= 220 && ycord <= 320)) {
+  //Block 7
+  setProperty("XorO7", "image", xoro[index]);
+  PlayerChoice = 7;
+  ComputerPlay();
+  } else if ((xcord >= 110 && xcord <= 210) && (ycord >= 220 && ycord <= 320)) {
+  //Block 8
+  setProperty("XorO8", "image", xoro[index]);
+  PlayerChoice = 8;
+  ComputerPlay();
+  } else if (xcord >= 220 && (ycord >= 220 && ycord <= 320)) {
+  //Block 9
+  setProperty("XorO9", "image", xoro[index]);
+  PlayerChoice = 9;
+  ComputerPlay();
+  }
+}
+
+//Function is that is meant to play as the computer in the most optimal position based upon the actions of the player
+function ComputerPlay(i) {
+  i = 0;
+  if (firstmove == true) {
+    //Creates separation between optimal and sufficient route
+    if (PlayerChoice == 1 || PlayerChoice == 4) {
+      //placeblock3 (optimal1)
+      setProperty("XorO3", "image", xoro[inDex]);
+      route = "optimized1";
+      if (PlayerChoice == 4) {
+        route = "sufficient1";
+      }
+      firstmove = false;
+    } else if (PlayerChoice == 3 || PlayerChoice == 8) {
+      //placeblock1 (optimal2)
+      setProperty("XorO1", "image", xoro[inDex]);
+      route = "optimized2";
+      if (PlayerChoice == 8) {
+        route = "sufficient2";
+      }
+      firstmove = false;
+    } else if (PlayerChoice == 7 || PlayerChoice == 2) {
+      setProperty("XorO9", "image", xoro[inDex]);
+      route = "optimized3";
+      if (PlayerChoice == 2) {
+        route = "sufficient3";
+      }
+      firstmove = false;
+    } else if (PlayerChoice == 9 || PlayerChoice == 6) {
+      setProperty("XorO7", "image", xoro[inDex]);
+      route = "optimized4";
+      if (PlayerChoice == 6) {
+        route = "sufficient4";
+      }
+      firstmove = false;
+    }
+  } else if ((secondmove == true)) {
+    //console.log(route);
+    //Optimal route
+    if ((route == "optimized1" && PlayerChoice == 7) || (route == "optimized3" && PlayerChoice == 1)){
+      //placeblock7 (optimal1)
+      setProperty("XorO4", "image", xoro[inDex]);
+      secondmove = false;
+    } else if ((route == "optimized2" && PlayerChoice == 9) || (route == "optimized4" && PlayerChoice == 3)){
+      setProperty("XorO6", "image", xoro[inDex]);
+      secondmove = false;
+    } else if (route == "optimized1" && PlayerChoice != 7){
+      setProperty("XorO7", "image", xoro[inDex]);
+      WinDetect(i);
+      secondmove = false;
+    } else if (route == "optimized2" && PlayerChoice != 9){
+      setProperty("XorO9", "image", xoro[inDex]);
+      WinDetect(i);
+      secondmove = false;
+    } else if (route == "optimized3" && PlayerChoice != 1){
+      setProperty("XorO1", "image", xoro[inDex]);
+      WinDetect(i);
+      secondmove = false;
+    } else if (route == "optimized4" && PlayerChoice != 3){
+      setProperty("XorO3", "image", xoro[inDex]);
+      WinDetect(i);
+      secondmove = false;
+    }
+    //Sufficient route
+    if (route == "sufficient1" && PlayerChoice == 7){
+      setProperty("XorO1", "image", xoro[inDex]);
+      secondmove = false;
+    } else if (route == "sufficient2" && PlayerChoice == 9){
+      setProperty("XorO7", "image", xoro[inDex]);
+      secondmove = false;
+    } else if (route == "sufficient3" && PlayerChoice == 1){
+      setProperty("XorO3", "image", xoro[inDex]);
+      secondmove = false;
+    } else if (route == "sufficient4" && PlayerChoice == 3){
+      setProperty("XorO9", "image", xoro[inDex]);
+      secondmove = false;
+    } else if (route == "sufficient1" && PlayerChoice != 7){
+      setProperty("XorO7", "image", xoro[inDex]);
+      WinDetect(i);
+      secondmove = false;
+    } else if (route == "sufficient2" && PlayerChoice != 9){
+      setProperty("XorO9", "image", xoro[inDex]);
+      WinDetect(i);
+      secondmove = false;
+    } else if (route == "sufficient3" && PlayerChoice != 1){
+      setProperty("XorO1", "image", xoro[inDex]);
+      WinDetect(i);
+      secondmove = false;
+    } else if (route == "sufficient4" && PlayerChoice != 3){
+      setProperty("XorO3", "image", xoro[inDex]);
+      WinDetect(i);
+      secondmove = false;
+    }
+  } else if ((thirdmove == true)) {
+    //console.log(route);
+    //Optimal route;
+    if ((route == "optimized1" || route == "optimized3") && PlayerChoice != 6) {
+      //placeblock8
+      setProperty("XorO6", "image", xoro[inDex]);
+      WinDetect(i);
+      thirdmove = false;
+    } else if ((route == "optimized2" || route == "optimized4") && PlayerChoice != 4) {
+      setProperty("XorO4", "image", xoro[inDex]);
+      WinDetect(i);
+      thirdmove = false;
+    } else if (PlayerChoice == 4 || PlayerChoice == 6) {
+      setProperty("XorO8", "image", xoro[inDex]);
+      thirdmove = false;
+  }
+    //Sufficient route;
+    if (route == "sufficient1") {
+      if (PlayerChoice == 2) {
+        setProperty("XorO9", "image", xoro[inDex]);
+        WinDetect(i);
+        thirdmove = false;
+      } else if (PlayerChoice != 2){
+        setProperty("XorO2", "image", xoro[inDex]);
+        WinDetect(i);
+        thirdmove = false;
+      }
+    } else if (route == "sufficient2"){
+      if (PlayerChoice == 4) {
+        setProperty("XorO4", "image", xoro[inDex]);
+        WinDetect(i);
+        thirdmove = false;
+      } else if ((PlayerChoice != 4)){
+        setProperty("XorO2", "image", xoro[inDex]);
+        WinDetect(i);
+        thirdmove = false;
+      }
+    } else if (route == "sufficient3"){
+      if (PlayerChoice == 6) {
+        setProperty("XorO7", "image", xoro[inDex]);
+        WinDetect(i);
+        thirdmove = false;
+      } else if ((PlayerChoice != 6)){
+        setProperty("XorO6", "image", xoro[inDex]);
+        WinDetect(i);
+        thirdmove = false;
+      }
+    } else if ((route == "sufficient4")){
+      if (PlayerChoice == 8) {
+        setProperty("XorO1", "image", xoro[inDex]);
+        WinDetect(i);
+        thirdmove = false;
+      } else if ((PlayerChoice != 8)){
+        setProperty("XorO8", "image", xoro[inDex]);
+        WinDetect(i);
+        thirdmove = false;
+      }
+    }
+  } else if (lastmove == true){
+    //console.log(route);
+    if ((route == "optimized1" || route == "optimized2") && PlayerChoice != 2){
+      setProperty("XorO2", "image", xoro[inDex]);
+      WinDetect(i);
+      lastmove = false;
+    } else if (route == "optimized1" && PlayerChoice == 2) {
+      setProperty("XorO9", "image", xoro[inDex]);
+      WinDetect();
+      lastmove = false;
+    } else if (route == "optimized2" && PlayerChoice == 2){
+      setProperty("XorO7", "image", xoro[inDex]);
+      WinDetect();
+      lastmove = false;
+    }
+    if ((route == "optimized3" || route == "optimized4") && PlayerChoice != 2) {
+      setProperty("XorO2", "image", xoro[inDex]);
+      WinDetect(i);
+      lastmove = false;
+    } else if (route == "optimized3" && PlayerChoice == 2) {
+      setProperty("XorO3", "image", xoro[inDex]);
+      WinDetect();
+      lastmove = false;
+    } else if (route == "optimized4" && PlayerChoice == 2) {
+      setProperty("XorO1", "image", xoro[inDex]);
+      WinDetect();
+      lastmove = false; 
+    }
+  }
+}
+
+//function that decides between a draw or the computer's win!
+function WinDetect(i){
+  setText("GameOver", "");
+  //(Player can't win) 
+if (i == 0) {
+  //In the case of the Computer's win
+  ComputerWin = ComputerWin+1;
+  insertItem(scoreList, 0, ComputerWin);
+  removeItem(scoreList, 1);
+  //console.log(scoreList);
+  console.log("Imagine Losing");
+  setText("GameOver", "You Lost!");
+  PointsAllocation();
+  GameReset();
+  } else {
+  //In the case of a draw
+  setText("GameOver", "Draw Game");
+  PointsAllocation();
+  GameReset();
+  }
+}
+
+//A function that sets the scores of the player and computer
+function PointsAllocation() {
+setNumber("ComputerScore", scoreList[0]);
+setNumber("PlayerScore", scoreList[1]);
+}
+
+//resets the game state
+function GameReset() {
+  for (var i = 1; i < 10; i++) {
+    setProperty("XorO"+i, "image", xoro[2]);
+  }
+  Lemove = 0;
+  hideElement("TictacToeboard");
+  hideElement("Untouchable1");
+  showElement("GameOver");
+}
